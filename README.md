@@ -20,7 +20,7 @@ Minecraft mod to copy NBT and render entities
   * **Key**: RMENU
   * **Description**: Renders yourself instead.
 
-* Self Modifier
+* Invisible Modifier
   * **Key**: APPS
   * **Description**: Makes the entity invisible.
   * **Note**: This is like an invisibility potion, it will still render armor.
