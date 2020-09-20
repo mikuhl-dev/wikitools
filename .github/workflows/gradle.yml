@@ -17,3 +17,7 @@ jobs:
       run: ./gradlew setupDevWorkspace
     - name: Build with Gradle
       run: ./gradlew build
+    - uses: actions/upload-artifact@v2
+      with:
+        name: build
+        path: build/libs/
