@@ -1,21 +1,57 @@
 package mikuhl.wikitools;
 
-import mikuhl.wikitools.proxy.CommonProxy;
+import org.lwjgl.input.Keyboard;
+
+import mikuhl.wikitools.handler.CopyNBTHandler;
+import mikuhl.wikitools.handler.EntityRenderHandler;
+import mikuhl.wikitools.handler.ModifierHandler;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.util.ChatComponentText;
+
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 
-@Mod(modid = WikiTools.MODID, version = WikiTools.VERSION)
+@Mod(modid = "WikiTools", version = "1.1.0", clientSideOnly = true)
 public class WikiTools {
-    public static final String MODID = "wikitools";
-    public static final String VERSION = "1.0";
-
-    @SidedProxy(serverSide = "mikuhl.wikitools.proxy.CommonProxy", clientSide = "mikuhl.wikitools.proxy.ClientProxy")
-    public static CommonProxy proxy;
-
-    @EventHandler
-    public void init(FMLInitializationEvent event) {
-        proxy.init(event);
-    }
+	
+	public static void sendMessage(String message) {
+		Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(message.replace('\u0026', '\u00a7')));
+	}
+	
+	public static final KeyBinding RENDER;
+	public static final KeyBinding STEVE_MODIFIER;
+	public static final KeyBinding ENCHANT_MODIFIER;
+	public static final KeyBinding SELF_MODIFIER;
+	public static final KeyBinding INVISIBLE_MODIFIER;
+	public static final KeyBinding COPY_NBT;
+	
+	static {
+		String mod_name = "WikiTools";
+		
+		RENDER = new KeyBinding("Render", Keyboard.KEY_NUMPAD8, mod_name);
+		STEVE_MODIFIER = new KeyBinding("Steve Modifier", Keyboard.KEY_NUMPAD5, mod_name);
+		ENCHANT_MODIFIER = new KeyBinding("Enchant Modifier", Keyboard.KEY_NUMPAD4, mod_name);
+		SELF_MODIFIER = new KeyBinding("Self Modifier", Keyboard.KEY_NUMPAD2, mod_name);
+		INVISIBLE_MODIFIER = new KeyBinding("Invisible Modifier", Keyboard.KEY_NUMPAD6, mod_name);
+		COPY_NBT = new KeyBinding("Copy NBT", Keyboard.KEY_NUMPAD7, mod_name);
+	}
+	
+	@EventHandler
+	public void init(FMLInitializationEvent event) {
+		MinecraftForge.EVENT_BUS.register(new ModifierHandler());
+		MinecraftForge.EVENT_BUS.register(new CopyNBTHandler());
+		MinecraftForge.EVENT_BUS.register(new EntityRenderHandler());
+		
+		ClientRegistry.registerKeyBinding(RENDER);
+		ClientRegistry.registerKeyBinding(STEVE_MODIFIER);
+		ClientRegistry.registerKeyBinding(ENCHANT_MODIFIER);
+		ClientRegistry.registerKeyBinding(SELF_MODIFIER);
+		ClientRegistry.registerKeyBinding(INVISIBLE_MODIFIER);
+		ClientRegistry.registerKeyBinding(COPY_NBT);
+	}
 }
