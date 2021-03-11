@@ -11,7 +11,6 @@ import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -68,17 +67,19 @@ public class EntityRenderHandler {
 		entity.rotationYawHead = entity.rotationYaw;
 		entity.prevRotationYawHead = entity.rotationYaw;
 		
-		if (ModifierHandler.ENCHANT_MODIFIER) {
+		if (ModifierHandler.HELDITEM_MODIFIER) {
+			entity.setCurrentItemOrArmor(0, null);
+		}
+		if (ModifierHandler.ARMOR_MODIFIER) {
+			entity.setCurrentItemOrArmor(1, null);
+			entity.setCurrentItemOrArmor(2, null);
+			entity.setCurrentItemOrArmor(3, null);
+			entity.setCurrentItemOrArmor(4, null);
+		}
+		else if (ModifierHandler.ENCHANT_MODIFIER) {
 			for (ItemStack itemStack : entity.getInventory()) {
 				if (itemStack != null) {
 					itemStack.getTagCompound().removeTag("ench");
-				}
-			}
-			if (entity instanceof EntityPlayer) {
-				for (ItemStack itemStack : ((EntityPlayer) entity).inventory.armorInventory) {
-					if (itemStack != null) {
-						itemStack.getTagCompound().removeTag("ench");
-					}
 				}
 			}
 		}
@@ -92,7 +93,7 @@ public class EntityRenderHandler {
 		BufferedImage image = renderEntity(shortest, scale, entity, framebuffer);
 		int longest;
 		
-		while ((longest = Math.max(image.getWidth(), image.getHeight())) != shortest) {
+		while ((longest = Math.max(image.getWidth(), image.getHeight())) != shortest && (longest != shortest - 1)) {
 			scale = shortest / (longest / scale);
 			
 			if (scale == Double.POSITIVE_INFINITY) {
