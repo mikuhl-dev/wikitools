@@ -83,17 +83,18 @@ public class EntityRenderHandler {
 				}
 			}
 		}
-		int width = mc.displayWidth;
-		int height = mc.displayHeight;
+		int displayWidth = mc.displayWidth;
+        int displayHeight = mc.displayHeight;
+        int shortest = Math.min(Math.min(displayWidth, displayHeight), 512);
+
+        Framebuffer framebuffer = FramebufferHelper.createFrameBuffer(displayWidth, displayHeight);
+
+        float scale = 1;
+        BufferedImage image = renderEntity(0, scale, entity, framebuffer);
 		
-		Framebuffer framebuffer = FramebufferHelper.createFrameBuffer(width, height);
-		int shortest = Math.min(Math.min(width, height), 515);
-		
-		double scale = 1;
-		BufferedImage image = renderEntity(shortest, scale, entity, framebuffer);
 		int longest;
 		
-		while ((longest = Math.max(image.getWidth(), image.getHeight())) != shortest && (longest != shortest - 1)) {
+		while ((longest = Math.max(image.getWidth(), image.getHeight())) != 0 && longest != shortest) {
 			scale = shortest / (longest / scale);
 			
 			if (scale == Double.POSITIVE_INFINITY) {
@@ -108,7 +109,7 @@ public class EntityRenderHandler {
 		WikiTools.sendMessage("&a[WikiTools] &fRendering done.");
 	}
 	
-	private BufferedImage renderEntity(int height, double scale, EntityLivingBase entity, Framebuffer framebuffer) {
+	private BufferedImage renderEntity(int height, float scale, EntityLivingBase entity, Framebuffer framebuffer) {
 		FramebufferHelper.clearFrameBuffer();
 		
 		ScaledResolution resolution = new ScaledResolution(Minecraft.getMinecraft());

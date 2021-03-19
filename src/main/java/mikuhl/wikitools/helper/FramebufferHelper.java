@@ -35,12 +35,9 @@ public class FramebufferHelper {
 	
 	public static Framebuffer createFrameBuffer(int width, int height) {
 		fbo = Minecraft.getMinecraft().getFramebuffer();
-		
 		Framebuffer framebuffer = new Framebuffer(width, height, true);
 		framebuffer.bindFramebuffer(true);
-		
 		clearFrameBuffer();
-		
 		return framebuffer;
 	}
 	
@@ -63,7 +60,6 @@ public class FramebufferHelper {
 	public static BufferedImage readImage(Framebuffer framebuffer) {
 		int width = framebuffer.framebufferWidth;
 		int height = framebuffer.framebufferHeight;
-		
 		IntBuffer pixels = BufferUtils.createIntBuffer(width * height);
 		GlStateManager.bindTexture(framebuffer.framebufferTexture);
 		GL11.glGetTexImage(GL11.GL_TEXTURE_2D, 0, GL12.GL_BGRA, GL12.GL_UNSIGNED_INT_8_8_8_8_REV, pixels);
@@ -146,7 +142,7 @@ public class FramebufferHelper {
 		}
 	}
 	
-	public static void drawEntityOnScreen(int posX, int posY, double scale, EntityLivingBase ent) {
+	public static void drawEntityOnScreen(int posX, int posY, float scale, EntityLivingBase ent) {
 		GlStateManager.enableColorMaterial();
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(posX, posY, 1.0F);
@@ -172,4 +168,5 @@ public class FramebufferHelper {
 		GlStateManager.disableTexture2D();
 		GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
 	}
+	
 }
